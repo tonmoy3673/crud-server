@@ -7,4 +7,11 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 
+app.get('/',(req,res)=>{
+    res.send('Server is Connected')
+})
+
+app.listen(port,()=>[
+    console.log(`Server is Running on port ${port}`)
+])
 
