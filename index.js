@@ -1,14 +1,11 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
-const cors = require ('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
-require('dotenv').config();
+const cors = require("cors");
+const { MongoClient, ServerApiVersion } = require("mongodb");
+require("dotenv").config();
 app.use(cors());
 app.use(express.json());
-
-
-
 
 const uri = `mongodb+srv://${process.env.USER_ID}:${process.env.USER_PASS}@users.pn2ul.mongodb.net/?retryWrites=true&w=majority&appName=Users`;
 
@@ -18,40 +15,33 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
 async function run() {
   try {
-    
-
     await client.connect();
-    // Send a ping to confirm a successful connection
-    
+
+    // ============= data base =========//
+    const usersCollection = client.db('userDB').collection('users')
+
+
+    // ============== post api =========//
+    app.post('/users',async(req,res)=>{
+        const user = req.body;
+        const result = await usersCollection.insertOne(user);
+        res.send(result);
+    })
+
+
     console.log("Server successfully connected to MongoDB!");
   } finally {
-    // Ensures that the client will close when you finish/error
-    // await client.close();
   }
 }
 run().catch(console.dir);
 
+app.get("/", (req, res) => {
+  res.send("Server is Connected");
+});
 
-
-
-app.get('/',(req,res)=>{
-    res.send('Server is Connected')
-})
-
-// ============== post api =========//
-// app.post('/user',async(req,res)=>{
-//     const user = req.body;
-//     const result = await 
-// })
-
-
-
-app.listen(port,()=>[
-    console.log(`Server is Running on port ${port}`)
-])
-
+app.listen(port, () => [console.log(`Server is Running on port ${port}`)]);
