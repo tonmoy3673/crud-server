@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 app.use(cors());
 app.use(express.json());
@@ -28,20 +28,29 @@ async function run() {
 
     // ============== post api =========//
     app.post('/users',async(req,res)=>{
-        const user = req.body;
-        const result = await usersCollection.insertOne(user);
-        res.send(result);
+       const cursor = req.body;
+       const result = await usersCollection.insertOne(cursor);
+       res.send(result);
     });
 
     // =============== get all users api =============//
     app.get('/users',async(req,res)=>{
-        const cursor = usersCollection.find();
-        const result = await cursor.toArray();
-        res.send(result);
+       const cursor = usersCollection.find();
+       const result = await cursor.toArray();
+       res.send(result);
+    })
+
+    // ============ user details api ==========//
+    app.get('/users/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)};
+      const result = await usersCollection.findOne(query);
+      res.send(result);
     })
 
 
-    console.log("Server successfully connected to MongoDB!");
+
+ console.log("Server successfully connected to MongoDB!");
   } finally {
   }
 }
