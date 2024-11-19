@@ -56,6 +56,24 @@ async function run() {
       res.send(result);
     })
 
+    // ============= Update User API ==========//
+    app.put('/users/:id', async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)};
+      const options = { upsert: true };
+      const updatedUser = req.body;
+      const user ={
+        $set : {
+          name : updatedUser.name,
+          email : updatedUser.email,
+          photo : updatedUser.photo
+        }
+      }
+      const result = await usersCollection.updateOne(query,options,user);
+      res.send(result);
+
+    })
+
 
  console.log("Server successfully connected to MongoDB!");
   } finally {
