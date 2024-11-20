@@ -57,7 +57,7 @@ async function run() {
     })
 
     // ============= Update User API ==========//
-    app.put('/users/:id', async(req,res)=>{
+    app.put('/update/:id', async(req,res)=>{
       const id = req.params.id;
       const query = {_id : new ObjectId(id)};
       const options = { upsert: true };
